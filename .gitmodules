@@ -1,0 +1,4 @@
+[submodule "e39-rpi-fw"]
+	path = e39-rpi-fw
+	url = ../e39-rpi-fw.git
+	branch = master
