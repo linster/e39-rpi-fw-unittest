@@ -12,12 +12,17 @@ add_executable(e39_rpi_fw_unittest
         unittests/ibus/dma/Packetizer_Test.cpp
         unittests/ibus/outputWriterApi/IbusLoggerOutputTest.cpp
         unittests/observerRegistry/observers/BaseObserverPiToPicoMessageDecodeTests.cpp
+
+
+        e39-rpi-fw/ibus/dma/Packetizer.cpp
         )
 
-#
-#target_include_directories(
-#        e39_rpi_fw_unittest
-#)
+
+target_include_directories(
+        e39_rpi_fw_unittest
+        PUBLIC
+        e39-rpi-fw/ibus/dma/Packetizer.h
+)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -28,12 +33,19 @@ FetchContent_Declare(
 #set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+
+
 add_subdirectory(e39-rpi-fw/libs/fmt)
 add_subdirectory(e39-rpi-fw/libs/nanopb)
 add_subdirectory(e39-rpi-fw/libs/nanopb_cpp)
 
-target_link_libraries(PicoTemplate
+target_link_libraries(e39_rpi_fw_unittest
         fmt::fmt-header-only
+        GTest::gtest_main
         #        nanopb
         #        nanopb_cpp
         )
+
+enable_testing()
+include(GoogleTest)
+gtest_discover_tests(e39_rpi_fw_unittest)
