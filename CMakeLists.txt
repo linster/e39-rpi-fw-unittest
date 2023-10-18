@@ -10,6 +10,16 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(e39_rpi_fw_unittest
         main.cpp
 
+        e39-rpi-fw/libs/nanopb/pb.h
+        e39-rpi-fw/libs/nanopb/pb_common.h
+        e39-rpi-fw/libs/nanopb/pb_common.c
+        e39-rpi-fw/libs/nanopb/pb_decode.h
+        e39-rpi-fw/libs/nanopb/pb_decode.c
+        e39-rpi-fw/libs/nanopb/pb_encode.h
+        e39-rpi-fw/libs/nanopb/pb_encode.c
+        e39-rpi-fw/libs/nanopb_cpp/nanopb_cpp.h
+        e39-rpi-fw/libs/nanopb_cpp/nanopb_cpp.cpp
+
         e39-rpi-fw/ibus/data/IbusPacket.cpp
 
         unittests/DummyLogger.cpp
@@ -18,8 +28,6 @@ add_executable(e39_rpi_fw_unittest
         e39-rpi-fw/ibus/dma/Packetizer.cpp
 
         unittests/ibus/outputWriterApi/IbusLoggerOutputTest.cpp
-
-
 
 
 
@@ -102,8 +110,8 @@ FetchContent_MakeAvailable(googletest)
 
 
 add_subdirectory(e39-rpi-fw/libs/fmt)
-add_subdirectory(e39-rpi-fw/libs/nanopb)
-add_subdirectory(e39-rpi-fw/libs/nanopb_cpp)
+#add_subdirectory(e39-rpi-fw/libs/nanopb)
+#add_subdirectory(e39-rpi-fw/libs/nanopb_cpp)
 
 target_link_libraries(e39_rpi_fw_unittest
         fmt::fmt-header-only
