@@ -1,7 +1,7 @@
 //
 // Created by stefan on 10/13/23.
 //
-#include "../../../../e39-rpi-fw/ibus/observerRegistry/observers/PiToPico/VideoRequest/PicoVideoRequestObserver.h"
+#include "ibus/observerRegistry/observers/PiToPico/VideoRequest/PicoVideoRequestObserver.h"
 #include <gtest/gtest.h>
 
 

@@ -4,8 +4,8 @@
 
 
 #include "../../../DummyLogger.h"
-#include "../../../../e39-rpi-fw/ibus/outputWriterApi/PicoToPi/heartbeatResponseWriter/HeartbeatResponseWriter.h"
-#include "../../../../e39-rpi-fw/ibus/observerRegistry/observers/PiToPico/heartbeatRequest/HeatbeatRequestObserver.h"
+#include "ibus/outputWriterApi/PicoToPi/heartbeatResponseWriter/HeartbeatResponseWriter.h"
+#include "ibus/observerRegistry/observers/PiToPico/heartbeatRequest/HeatbeatRequestObserver.h"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -49,13 +49,13 @@ class MockHeartbeatResponseWriter : public pico::ibus::output::writer::Heartbeat
     std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
 public:
     //Mock this to do nothing
-    MOCK_METHOD(std::shared_ptr<pico::ibus::dma::DmaManager>, getDmaManager, (), (override));
+    MOCK_METHOD(std::shared_ptr<pico::ibus::dma::IDmaManager>, getDmaManager, (), (override));
     //Mock this to do nothing, but we can record it's called.
     MOCK_METHOD(void, sendHeartbeatResponse, () );
 
     MockHeartbeatResponseWriter(
             std::shared_ptr<pico::logger::BaseLogger> logger,
-            std::shared_ptr<pico::ibus::dma::DmaManager> dmaManager
+            std::shared_ptr<pico::ibus::dma::IDmaManager> dmaManager
             ) : HeartbeatResponseWriter(logger, dmaManager) {}
 };
 

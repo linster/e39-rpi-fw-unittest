@@ -1,7 +1,7 @@
 //
 // Created by stefan on 10/16/23.
 //
-#include "../../../../e39-rpi-fw/ibus/outputWriterApi/PicoToPi/picoPiSoftPowerRequest/SoftPowerRequestWriter.h"
+#include "ibus/outputWriterApi/PicoToPi/picoPiSoftPowerRequest/SoftPowerRequestWriter.h"
 #include <gtest/gtest.h>
 
 class SoftPowerWriterTest : public ::testing::Test {

@@ -23,3 +23,23 @@ void DummyLogger::print(pico::logger::BaseLogger::Level level, std::string tag, 
     printf("[%s]    [%s]:[%s] \n", levelString.c_str(), tag.c_str(), message.c_str());
 
 }
+
+void DummyLogger::d(std::string tag, std::string message) {
+    print(BaseLogger::Level::DEBUG, tag, message);
+}
+
+void DummyLogger::i(std::string tag, std::string message) {
+    print(BaseLogger::Level::INFO, tag, message);
+}
+
+void DummyLogger::w(std::string tag, std::string message) {
+    print(BaseLogger::Level::WARN, tag, message);
+}
+
+void DummyLogger::e(std::string tag, std::string message) {
+    print(BaseLogger::Level::ERROR, tag, message);
+}
+
+void DummyLogger::wtf(std::string tag, std::string message) {
+    print(BaseLogger::Level::WTF, tag, message);
+}

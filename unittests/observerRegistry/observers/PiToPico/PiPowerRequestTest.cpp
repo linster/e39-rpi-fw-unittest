@@ -1,7 +1,7 @@
 //
 // Created by stefan on 10/13/23.
 //
-#include "../../../../e39-rpi-fw/ibus/observerRegistry/observers/PiToPico/PiPowerRequest/PiPowerRequestObserver.h"
+#include "ibus/observerRegistry/observers/PiToPico/PiPowerRequest/PiPowerRequestObserver.h"
 #include <gtest/gtest.h>
 
 

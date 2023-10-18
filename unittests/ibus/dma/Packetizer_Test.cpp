@@ -3,7 +3,7 @@
 //
 
 
-#include "../../../e39-rpi-fw/ibus/dma/Packetizer.h"
+#include "ibus/dma/Packetizer.h"
 #include <gtest/gtest.h>
 
 using namespace pico::ibus::dma;
