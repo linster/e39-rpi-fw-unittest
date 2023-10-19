@@ -75,6 +75,7 @@ TEST_F(HeartbeatRequestObserverTest, Dummy) {
 
     requestObserver.dispatchPacket(
             logger,
+            //TODO the decode logic fills auto* input string with junk.
             pico::ibus::data::IbusPacket(getHeartbeatRequestRawBytes())
             );
 

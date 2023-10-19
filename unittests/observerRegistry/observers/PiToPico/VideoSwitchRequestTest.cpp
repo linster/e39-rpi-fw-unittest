@@ -2,6 +2,7 @@
 // Created by stefan on 10/13/23.
 //
 #include "ibus/observerRegistry/observers/PiToPico/VideoRequest/PicoVideoRequestObserver.h"
+#include "DummyLogger.h"
 #include <gtest/gtest.h>
 
 
@@ -60,3 +61,84 @@ public:
         return ret;
     }
 };
+
+class MockVideoSwitch : public pico::hardware::videoSwitch::VideoSwitch {
+public:
+    pico::hardware::videoSwitch::VideoSource selectedSource;
+    void switchTo(pico::hardware::videoSwitch::VideoSource source) override {
+        selectedSource = source;
+    }
+
+    pico::hardware::videoSwitch::VideoSource getPreviousVideoSource() override {
+        return selectedSource;
+    }
+};
+
+TEST_F(PicoVideoSwitchRequestObserverTest, upstream) {
+    std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
+
+    MockVideoSwitch mockVideoSwitch = MockVideoSwitch();
+
+    pico::ibus::observers::PicoVideoRequestObserver requestObserver = pico::ibus::observers::PicoVideoRequestObserver(
+            logger,
+            std::make_unique<MockVideoSwitch>(mockVideoSwitch)
+            );
+
+    requestObserver.dispatchPacket(
+            logger,
+            pico::ibus::data::IbusPacket(upstream())
+            );
+
+    EXPECT_EQ(pico::hardware::videoSwitch::VideoSource::UPSTREAM, mockVideoSwitch.selectedSource);
+}
+TEST_F(PicoVideoSwitchRequestObserverTest, pico) {
+    std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
+
+    MockVideoSwitch mockVideoSwitch = MockVideoSwitch();
+
+    pico::ibus::observers::PicoVideoRequestObserver requestObserver = pico::ibus::observers::PicoVideoRequestObserver(
+            logger,
+            std::make_unique<MockVideoSwitch>(mockVideoSwitch)
+    );
+
+    requestObserver.dispatchPacket(
+            logger,
+            pico::ibus::data::IbusPacket(pico())
+    );
+
+    EXPECT_EQ(pico::hardware::videoSwitch::VideoSource::PICO, mockVideoSwitch.selectedSource);
+}
+TEST_F(PicoVideoSwitchRequestObserverTest, pi) {
+    std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
+
+    MockVideoSwitch mockVideoSwitch = MockVideoSwitch();
+
+    pico::ibus::observers::PicoVideoRequestObserver requestObserver = pico::ibus::observers::PicoVideoRequestObserver(
+            logger,
+            std::make_unique<MockVideoSwitch>(mockVideoSwitch)
+    );
+
+    requestObserver.dispatchPacket(
+            logger,
+            pico::ibus::data::IbusPacket(rpi())
+    );
+
+    EXPECT_EQ(pico::hardware::videoSwitch::VideoSource::PI, mockVideoSwitch.selectedSource);
+}
+TEST_F(PicoVideoSwitchRequestObserverTest, rvc) {
+    std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
+
+    MockVideoSwitch mockVideoSwitch = MockVideoSwitch();
+
+    pico::ibus::observers::PicoVideoRequestObserver requestObserver = pico::ibus::observers::PicoVideoRequestObserver(
+            logger,
+            std::make_unique<MockVideoSwitch>(mockVideoSwitch)
+    );
+
+    requestObserver.dispatchPacket(
+            logger,
+            pico::ibus::data::IbusPacket(rvc())
+    );
+
+    EXPECT_EQ(pico::hardware::videoSwitch::VideoSource::RVC, mockVideoSwitch.selectedSource);
+}

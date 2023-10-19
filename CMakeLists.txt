@@ -55,7 +55,9 @@ add_executable(e39_rpi_fw_unittest
 
         unittests/observerRegistry/observers/PiToPico/HeartBeatRequestObserverTest.cpp
 
+        unittests/ibus/outputWriterApi/MockDmaManager.h
         unittests/ibus/outputWriterApi/SoftPowerWriterTest.cpp
+        unittests/ibus/outputWriterApi/HeartbeatResponseWriterTest.cpp
         e39-rpi-fw/ibus/outputWriterApi/BaseOutputWriter.cpp
         e39-rpi-fw/ibus/outputWriterApi/PicoToPi/heartbeatResponseWriter/HeartbeatResponseWriter.cpp
         e39-rpi-fw/ibus/outputWriterApi/PicoToPi/picoPiSoftPowerRequest/SoftPowerRequestWriter.cpp
@@ -73,30 +75,8 @@ target_include_directories(
         e39-rpi-fw/libs/nanopb
         e39-rpi-fw/libs/fmt
 
-#        e39-rpi-fw/ibus/data/IbusPacket.h
-
         unittests/
-#        e39-rpi-fw/logging/BaseLogger.h
-#
-#        e39-rpi-fw/ibus/dma/Packetizer.h
-#        e39-rpi-fw/ibus/observerRegistry/observers/PiToPico/heartbeatRequest/HeatbeatRequestObserver.h
-#        e39-rpi-fw/ibus/observerRegistry/observers/PiToPico/picoConfigurationReadRequest/PicoConfigurationReadRequestObserver.h
-#        e39-rpi-fw/ibus/observerRegistry/observers/PiToPico/PiPowerRequest/PiPowerRequestObserver.h
-#        e39-rpi-fw/ibus/observerRegistry/observers/PiToPico/VideoRequest/PicoVideoRequestObserver.h
-#        e39-rpi-fw/ibus/data/IBusDevices.h
-#        e39-rpi-fw/proto_cpp/ConfigMessage.h
-#        e39-rpi-fw/proto_cpp/PicoToPi.h
-#        e39-rpi-fw/proto_cpp/PiToPico.h
-#        e39-rpi-fw/proto_generated/ConfigProto.pb.h
-#        e39-rpi-fw/proto_generated/PicoToPi.pb.h
-#        e39-rpi-fw/proto_generated/PiToPico.pb.h
-#
-#
-#        e39-rpi-fw/ibus/outputWriterApi/PicoToPi/heartbeatResponseWriter/HeartbeatResponseWriter.h
-#        e39-rpi-fw/ibus/outputWriterApi/PicoToPi/picoPiSoftPowerRequest/SoftPowerRequestWriter.h
 )
-
-#target_link_directories()
 
 include(FetchContent)
 FetchContent_Declare(
