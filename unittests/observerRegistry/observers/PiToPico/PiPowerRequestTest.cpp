@@ -54,10 +54,11 @@ TEST_F(PicoPowerRequestObserverTest, PowerOn) {
     std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
 
     MockPowerSwitchManager mockPowerSwitchManager = MockPowerSwitchManager();
+    std::shared_ptr<pico::hardware::pi4powerswitch::IPi4PowerSwitchManager> mockPowerSwitchManagerPtr = std::make_shared<MockPowerSwitchManager>(mockPowerSwitchManager);
 
     pico::ibus::observers::PiPowerRequestObserver requestObserver = pico::ibus::observers::PiPowerRequestObserver(
             logger,
-            std::make_unique<MockPowerSwitchManager>(mockPowerSwitchManager)
+            mockPowerSwitchManagerPtr
             );
 
     requestObserver.dispatchPacket(
@@ -65,7 +66,10 @@ TEST_F(PicoPowerRequestObserverTest, PowerOn) {
             pico::ibus::data::IbusPacket(powerOn())
     );
 
-    EXPECT_EQ(1, mockPowerSwitchManager.isOn);
+    EXPECT_EQ(
+            1,
+            std::dynamic_pointer_cast<MockPowerSwitchManager>(mockPowerSwitchManagerPtr)->isOn
+            );
 }
 
 TEST_F(PicoPowerRequestObserverTest, PowerOff) {
@@ -73,14 +77,18 @@ TEST_F(PicoPowerRequestObserverTest, PowerOff) {
     std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
 
     MockPowerSwitchManager mockPowerSwitchManager = MockPowerSwitchManager();
+    std::shared_ptr<pico::hardware::pi4powerswitch::IPi4PowerSwitchManager> mockPowerSwitchManagerPtr = std::make_shared<MockPowerSwitchManager>(mockPowerSwitchManager);
 
     pico::ibus::observers::PiPowerRequestObserver requestObserver = pico::ibus::observers::PiPowerRequestObserver(
             logger,
-            std::make_unique<MockPowerSwitchManager>(mockPowerSwitchManager)
+            mockPowerSwitchManagerPtr
     );
     requestObserver.dispatchPacket(
             logger,
             pico::ibus::data::IbusPacket(powerOff())
     );
-    EXPECT_EQ(0, mockPowerSwitchManager.isOn);
+    EXPECT_EQ(
+            0,
+            std::dynamic_pointer_cast<MockPowerSwitchManager>(mockPowerSwitchManagerPtr)->isOn
+            );
 }
