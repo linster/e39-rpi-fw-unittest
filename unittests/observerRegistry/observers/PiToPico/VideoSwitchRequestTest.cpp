@@ -78,10 +78,11 @@ TEST_F(PicoVideoSwitchRequestObserverTest, upstream) {
     std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
 
     MockVideoSwitch mockVideoSwitch = MockVideoSwitch();
+    std::shared_ptr<pico::hardware::videoSwitch::VideoSwitch> videoSwitchPtr = std::make_shared<MockVideoSwitch>(mockVideoSwitch);
 
     pico::ibus::observers::PicoVideoRequestObserver requestObserver = pico::ibus::observers::PicoVideoRequestObserver(
             logger,
-            std::make_unique<MockVideoSwitch>(mockVideoSwitch)
+            videoSwitchPtr
             );
 
     requestObserver.dispatchPacket(
@@ -89,16 +90,20 @@ TEST_F(PicoVideoSwitchRequestObserverTest, upstream) {
             pico::ibus::data::IbusPacket(upstream())
             );
 
-    EXPECT_EQ(pico::hardware::videoSwitch::VideoSource::UPSTREAM, mockVideoSwitch.selectedSource);
+    EXPECT_EQ(
+            pico::hardware::videoSwitch::VideoSource::UPSTREAM,
+            std::dynamic_pointer_cast<MockVideoSwitch>(videoSwitchPtr)->selectedSource
+            );
 }
 TEST_F(PicoVideoSwitchRequestObserverTest, pico) {
     std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
 
     MockVideoSwitch mockVideoSwitch = MockVideoSwitch();
+    std::shared_ptr<pico::hardware::videoSwitch::VideoSwitch> videoSwitchPtr = std::make_shared<MockVideoSwitch>(mockVideoSwitch);
 
     pico::ibus::observers::PicoVideoRequestObserver requestObserver = pico::ibus::observers::PicoVideoRequestObserver(
             logger,
-            std::make_unique<MockVideoSwitch>(mockVideoSwitch)
+            videoSwitchPtr
     );
 
     requestObserver.dispatchPacket(
@@ -106,16 +111,20 @@ TEST_F(PicoVideoSwitchRequestObserverTest, pico) {
             pico::ibus::data::IbusPacket(pico())
     );
 
-    EXPECT_EQ(pico::hardware::videoSwitch::VideoSource::PICO, mockVideoSwitch.selectedSource);
+    EXPECT_EQ(
+            pico::hardware::videoSwitch::VideoSource::PICO,
+            std::dynamic_pointer_cast<MockVideoSwitch>(videoSwitchPtr)->selectedSource
+            );
 }
 TEST_F(PicoVideoSwitchRequestObserverTest, pi) {
     std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
 
     MockVideoSwitch mockVideoSwitch = MockVideoSwitch();
+    std::shared_ptr<pico::hardware::videoSwitch::VideoSwitch> videoSwitchPtr = std::make_shared<MockVideoSwitch>(mockVideoSwitch);
 
     pico::ibus::observers::PicoVideoRequestObserver requestObserver = pico::ibus::observers::PicoVideoRequestObserver(
             logger,
-            std::make_unique<MockVideoSwitch>(mockVideoSwitch)
+            videoSwitchPtr
     );
 
     requestObserver.dispatchPacket(
@@ -123,16 +132,20 @@ TEST_F(PicoVideoSwitchRequestObserverTest, pi) {
             pico::ibus::data::IbusPacket(rpi())
     );
 
-    EXPECT_EQ(pico::hardware::videoSwitch::VideoSource::PI, mockVideoSwitch.selectedSource);
+    EXPECT_EQ(
+            pico::hardware::videoSwitch::VideoSource::PI,
+            std::dynamic_pointer_cast<MockVideoSwitch>(videoSwitchPtr)->selectedSource
+            );
 }
 TEST_F(PicoVideoSwitchRequestObserverTest, rvc) {
     std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
 
     MockVideoSwitch mockVideoSwitch = MockVideoSwitch();
+    std::shared_ptr<pico::hardware::videoSwitch::VideoSwitch> videoSwitchPtr = std::make_shared<MockVideoSwitch>(mockVideoSwitch);
 
     pico::ibus::observers::PicoVideoRequestObserver requestObserver = pico::ibus::observers::PicoVideoRequestObserver(
             logger,
-            std::make_unique<MockVideoSwitch>(mockVideoSwitch)
+            videoSwitchPtr
     );
 
     requestObserver.dispatchPacket(
@@ -140,5 +153,8 @@ TEST_F(PicoVideoSwitchRequestObserverTest, rvc) {
             pico::ibus::data::IbusPacket(rvc())
     );
 
-    EXPECT_EQ(pico::hardware::videoSwitch::VideoSource::RVC, mockVideoSwitch.selectedSource);
+    EXPECT_EQ(
+            pico::hardware::videoSwitch::VideoSource::RVC,
+            std::dynamic_pointer_cast<MockVideoSwitch>(videoSwitchPtr)->selectedSource
+            );
 }
