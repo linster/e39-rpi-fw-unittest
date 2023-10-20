@@ -3,7 +3,11 @@
 //
 
 
-#include "../../../DummyLogger.h"
+#include "DummyLogger.h"
+
+//TODO holy yikes I wouldn't want to have include path collisions in a big project.
+#include "ibus/outputWriterApi/MockDmaManager.h"
+
 #include "ibus/outputWriterApi/PicoToPi/heartbeatResponseWriter/HeartbeatResponseWriter.h"
 #include "ibus/observerRegistry/observers/PiToPico/heartbeatRequest/HeatbeatRequestObserver.h"
 #include <gtest/gtest.h>
@@ -43,21 +47,6 @@ public:
 //byte vector, and later we can swap it out for a generated Cpp file to practise
 //with CMake.
 
-class MockHeartbeatResponseWriter : public pico::ibus::output::writer::HeartbeatResponseWriter {
-
-    //Override
-    std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
-public:
-    //Mock this to do nothing
-    MOCK_METHOD(std::shared_ptr<pico::ibus::dma::IDmaManager>, getDmaManager, (), (override));
-    //Mock this to do nothing, but we can record it's called.
-    MOCK_METHOD(void, sendHeartbeatResponse, () );
-
-    MockHeartbeatResponseWriter(
-            std::shared_ptr<pico::logger::BaseLogger> logger,
-            std::shared_ptr<pico::ibus::dma::IDmaManager> dmaManager
-            ) : HeartbeatResponseWriter(logger, dmaManager) {}
-};
 
 //TODO need a way on HeartbeatRequestObserver to call real on onNewPacket, but slot() onNewPiToPicoPacket
 
@@ -65,21 +54,34 @@ TEST_F(HeartbeatRequestObserverTest, Dummy) {
 
     std::shared_ptr<pico::logger::BaseLogger> logger = std::make_shared<DummyLogger>(DummyLogger());
 
-    MockHeartbeatResponseWriter mockHeartbeatResponseWriter = MockHeartbeatResponseWriter(logger, nullptr);
+    MockDmaManager mockDmaManager = MockDmaManager();
+    std::shared_ptr<pico::ibus::dma::IDmaManager> iDmaManagerPtr = std::make_shared<MockDmaManager>(mockDmaManager);
+
+
+    //We'll just use the real class, and have it throw some bytes into our fake dmaManager.
+    std::shared_ptr<pico::ibus::output::writer::HeartbeatResponseWriter> writerPtr =
+            std::make_shared<pico::ibus::output::writer::HeartbeatResponseWriter>(
+                    logger,
+                    iDmaManagerPtr);
 
     pico::ibus::observers::HeatbeatRequestObserver requestObserver = pico::ibus::observers::HeatbeatRequestObserver(
             logger,
-            std::make_shared<pico::ibus::output::writer::HeartbeatResponseWriter>(mockHeartbeatResponseWriter)
+            writerPtr
             );
 
 
     requestObserver.dispatchPacket(
             logger,
-            //TODO the decode logic fills auto* input string with junk.
             pico::ibus::data::IbusPacket(getHeartbeatRequestRawBytes())
             );
 
-    EXPECT_CALL(mockHeartbeatResponseWriter, sendHeartbeatResponse());
+    pico::ibus::data::IbusPacket writtenPacket = std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi;
+    pico::ibus::data::IbusPacket dummyPacket = pico::ibus::data::IbusPacket(
+            pico::ibus::data::BROADCAST,
+            pico::ibus::data::BROADCAST,
+            std::vector<uint8_t>()
+    );
 
-    //Now we ask the writer mock? or the observer mock? for the PiToPicoMessage?
+    //Not a great test, but we did set something on the dmaManager, so that means the observer was ok.
+    EXPECT_NE(writtenPacket.getRawPacket(), dummyPacket.getRawPacket());
 }
