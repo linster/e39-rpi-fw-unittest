@@ -23,6 +23,7 @@ TEST_F(PacketizerTest, AddAByte) {
 
     p.addByte(0x01);
 
+    ASSERT_FALSE(p.isPacketComplete());
     ASSERT_EQ(p.getPacketBytes().size(), 1);
     ASSERT_EQ(p.getPacketBytes()[0], 0x01);
 }
@@ -34,6 +35,7 @@ TEST_F(PacketizerTest, AddTwoBytes) {
     p.addByte(0x01);
     p.addByte(0x02);
 
+    ASSERT_FALSE(p.isPacketComplete());
     ASSERT_EQ(p.getPacketBytes().size(), 2);
     ASSERT_EQ(p.getPacketBytes()[0], 0x01);
     ASSERT_EQ(p.getPacketBytes()[1], 0x02);
@@ -48,6 +50,7 @@ TEST_F(PacketizerTest, AddTwoVector) {
 
     p.addBytes(bytesToAdd);
 
+    ASSERT_FALSE(p.isPacketComplete());
     ASSERT_EQ(p.getPacketBytes().size(), 2);
     ASSERT_EQ(p.getPacketBytes()[0], 0x01);
     ASSERT_EQ(p.getPacketBytes()[1], 0x02);
@@ -58,13 +61,13 @@ TEST_F(PacketizerTest, AddKnownByteSequenceValidCheckSumAtEnd) {
 
     std::vector<uint8_t> bytesToAdd = std::vector<uint8_t>();
     //Switch Radio to AUX
-    bytesToAdd.push_back(0x3B);
-    bytesToAdd.push_back(0x05);
-    bytesToAdd.push_back(0x68);
-    bytesToAdd.push_back(0x4E);
-    bytesToAdd.push_back(0x00);
-    bytesToAdd.push_back(0x00);
-    bytesToAdd.push_back(0x18);
+    bytesToAdd.push_back(0x3B); //0
+    bytesToAdd.push_back(0x05); //1
+    bytesToAdd.push_back(0x68); //2
+    bytesToAdd.push_back(0x4E); //3
+    bytesToAdd.push_back(0x00); //4
+    bytesToAdd.push_back(0x00); //5
+    bytesToAdd.push_back(0x18); //6
 
     p.addBytes(bytesToAdd);
 
@@ -91,7 +94,7 @@ TEST_F(PacketizerTest, AddKnownByteSequenceNoValidChecksumUntilLastByteAdded) {
     p.addByte(0x18);
     ASSERT_TRUE(p.isPacketComplete());
 
-    ASSERT_EQ(p.getPacketBytes().size(), 6);
+    ASSERT_EQ(p.getPacketBytes().size(), 7);
 
 }
 ///After we have the Packetizer full of a known bytestream, verify we can call reset and all the
@@ -141,8 +144,11 @@ TEST_F(PacketizerTest, RecycleNoInterleave) {
     ASSERT_FALSE(p.isPacketComplete());
     p.addByte(0x18);
     ASSERT_TRUE(p.isPacketComplete());
-    ASSERT_EQ(p.getPacketBytes().size(), 6);
+    ASSERT_EQ(p.getPacketBytes().size(), 7);
 
+    //TODO recycle actually doesn't make any sense.
+    //TODO we just want to check when we add a byte whether we have a complete packet.
+    //TODO and if we do, then the caller should read it.
     p.recycle(); //Recycle without interleave.
     ASSERT_FALSE(p.isPacketComplete());
     ASSERT_EQ(p.getPacketBytes().size(), 0);
@@ -163,5 +169,5 @@ TEST_F(PacketizerTest, RecycleNoInterleave) {
     p.addByte(0x19);
 
     ASSERT_TRUE(p.isPacketComplete());
-    ASSERT_EQ(p.getPacketBytes().size(), 6);
+    ASSERT_EQ(p.getPacketBytes().size(), 7);
 }
