@@ -63,7 +63,7 @@ TEST_F(PicoPowerRequestObserverTest, PowerOn) {
 
     requestObserver.dispatchPacket(
             logger,
-            pico::ibus::data::IbusPacket(powerOn())
+            std::make_shared<pico::ibus::data::IbusPacket>(powerOn())
     );
 
     EXPECT_EQ(
@@ -85,7 +85,7 @@ TEST_F(PicoPowerRequestObserverTest, PowerOff) {
     );
     requestObserver.dispatchPacket(
             logger,
-            pico::ibus::data::IbusPacket(powerOff())
+            std::make_shared<pico::ibus::data::IbusPacket>(powerOff())
     );
     EXPECT_EQ(
             0,

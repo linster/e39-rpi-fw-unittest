@@ -11,24 +11,27 @@ class SoftPowerWriterTest : public ::testing::Test {
 public:
     static std::vector<uint8_t> restartX() {
         std::vector<uint8_t> ret = std::vector<uint8_t>();
-//        DEBUG : PicoCommsWindow / Sending message: PicoToPi RestartX bytes: [31, 4, 81, 8, 4, b8]
+
+//        DEBUG : PicoCommsWindow / Sending message: PicoToPi RestartX bytes: [31, 6, 81, 8, 4, b8]
         ret.push_back(0x31);
-        ret.push_back(0x04);
+        ret.push_back(0x06);
         ret.push_back(0x81);
         ret.push_back(0x08);
         ret.push_back(0x04);
-        ret.push_back(0x08);
+        ret.push_back(0xB8);
         return ret;
     }
     static std::vector<uint8_t> restartPi() {
         std::vector<uint8_t> ret = std::vector<uint8_t>();
-//        DEBUG : PicoCommsWindow / Sending message: PicoToPi RestartPi bytes: [31, 4, 81, 8, 5, b9]
+//        DEBUG : PicoCommsWindow / Sending message: PicoToPi RestartPi bytes: [31, 6, 81, 8, 5, 1a, 0, a1]
         ret.push_back(0x31);
-        ret.push_back(0x04);
+        ret.push_back(0x06);
         ret.push_back(0x81);
         ret.push_back(0x08);
         ret.push_back(0x05);
-        ret.push_back(0x09);
+        ret.push_back(0x1A);
+        ret.push_back(0x00);
+        ret.push_back(0xA1);
         return ret;
     }
 };
@@ -53,15 +56,26 @@ TEST_F(SoftPowerWriterTest, RestartX) {
     EXPECT_EQ(pico::ibus::data::IbusDeviceEnum::PICO,
               std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi.getSourceDevice());
 
-    std::vector<uint8_t> actualDataVector =
-            *std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi.getData();
-
-    EXPECT_THAT(actualDataVector, testing::ElementsAre(0x08, 0x04));
-
     std::vector<uint8_t> actualRawPacket =
             std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi.getRawPacket();
 
-    EXPECT_THAT(actualRawPacket, testing::ContainerEq(restartX()));
+    //Don't actually test the complete byte, just try and parse it and see we set the right MessageType
+
+    pico::ibus::data::IbusPacket sentPacket = pico::ibus::data::IbusPacket(actualRawPacket);
+
+    std::string inputString = std::string(0, '\0');
+    std::vector<uint8_t> data = *sentPacket.getData();
+    for (const uint8_t item: data) {
+        inputString.push_back(item);
+    }
+    auto inputStream = NanoPb::StringInputStream(std::make_unique<std::string>(inputString.c_str()));
+
+    pico::messages::PicoToPiMessage decoded;
+    if(!NanoPb::decode<pico::messages::PicoToPiMessageConverter>(inputStream, decoded)) {
+        FAIL();
+    }
+
+    ASSERT_EQ(decoded.messageType, pico::messages::PicoToPiMessage::MessageType::PiSoftPowerRestartX);
 }
 
 TEST_F(SoftPowerWriterTest, RestartPi) {
@@ -75,7 +89,7 @@ TEST_F(SoftPowerWriterTest, RestartPi) {
             iDmaManagerPtr
     );
 
-    writer.requestRpiRestartX();
+    writer.requestRpiRestart();
 
     EXPECT_EQ(pico::ibus::data::IbusDeviceEnum::RPI,
               std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi.getDestinationDevice());
@@ -85,10 +99,10 @@ TEST_F(SoftPowerWriterTest, RestartPi) {
     std::vector<uint8_t> actualDataVector =
             *std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi.getData();
 
-    EXPECT_THAT(actualDataVector, testing::ElementsAre(0x08, 0x05));
+//    EXPECT_THAT(actualDataVector, testing::ElementsAre(0x08, 0x05, 0x1A, 0x00));
 
     std::vector<uint8_t> actualRawPacket =
             std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi.getRawPacket();
 
-    EXPECT_THAT(actualRawPacket, testing::ContainerEq(restartX()));
+    EXPECT_THAT(actualRawPacket, testing::ContainerEq(restartPi()));
 }

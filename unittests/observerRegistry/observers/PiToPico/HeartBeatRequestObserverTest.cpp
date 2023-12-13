@@ -72,7 +72,7 @@ TEST_F(HeartbeatRequestObserverTest, Dummy) {
 
     requestObserver.dispatchPacket(
             logger,
-            pico::ibus::data::IbusPacket(getHeartbeatRequestRawBytes())
+            std::make_shared<pico::ibus::data::IbusPacket>(getHeartbeatRequestRawBytes())
             );
 
     pico::ibus::data::IbusPacket writtenPacket = std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi;

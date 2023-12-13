@@ -87,7 +87,7 @@ TEST_F(PicoVideoSwitchRequestObserverTest, upstream) {
 
     requestObserver.dispatchPacket(
             logger,
-            pico::ibus::data::IbusPacket(upstream())
+            std::make_shared<pico::ibus::data::IbusPacket>(upstream())
             );
 
     EXPECT_EQ(
@@ -108,7 +108,7 @@ TEST_F(PicoVideoSwitchRequestObserverTest, pico) {
 
     requestObserver.dispatchPacket(
             logger,
-            pico::ibus::data::IbusPacket(pico())
+            std::make_shared<pico::ibus::data::IbusPacket>(pico())
     );
 
     EXPECT_EQ(
@@ -129,7 +129,7 @@ TEST_F(PicoVideoSwitchRequestObserverTest, pi) {
 
     requestObserver.dispatchPacket(
             logger,
-            pico::ibus::data::IbusPacket(rpi())
+            std::make_shared<pico::ibus::data::IbusPacket>(rpi())
     );
 
     EXPECT_EQ(
@@ -150,7 +150,7 @@ TEST_F(PicoVideoSwitchRequestObserverTest, rvc) {
 
     requestObserver.dispatchPacket(
             logger,
-            pico::ibus::data::IbusPacket(rvc())
+            std::make_shared<pico::ibus::data::IbusPacket>(rvc())
     );
 
     EXPECT_EQ(

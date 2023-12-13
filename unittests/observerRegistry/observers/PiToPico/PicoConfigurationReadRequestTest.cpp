@@ -51,6 +51,8 @@ TEST_F(PicoConfigReadRequestObserverTest, TestDecode) {
             nullptr
             );
 
+
+
     pico::ibus::observers::PicoConfigurationReadRequestObserver requestObserver = pico::ibus::observers::PicoConfigurationReadRequestObserver(
             logger,
             std::make_shared<pico::ibus::output::writer::ConfigurationStatusWriter>(mockConfigurationStatusWriter),
@@ -59,8 +61,11 @@ TEST_F(PicoConfigReadRequestObserverTest, TestDecode) {
 
     requestObserver.dispatchPacket(
             logger,
-            pico::ibus::data::IbusPacket(configRequest())
+            std::make_shared<pico::ibus::data::IbusPacket>(configRequest())
             );
 
-    EXPECT_CALL(mockConfigurationStatusWriter, scheduleEmit(testing::_));
+    EXPECT_CALL(
+            mockConfigurationStatusWriter,
+            scheduleEmit(testing::_)
+            );
 }
