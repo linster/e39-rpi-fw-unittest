@@ -21,6 +21,7 @@ add_executable(e39_rpi_fw_unittest
         e39-rpi-fw/libs/nanopb_cpp/nanopb_cpp.cpp
 
         e39-rpi-fw/ibus/data/IbusPacket.cpp
+        unittests/ibus/data/IbusDataTest.cpp
 
         unittests/DummyLogger.cpp
 
