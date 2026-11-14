@@ -64,6 +64,33 @@ add_executable(e39_rpi_fw_unittest
         e39-rpi-fw/ibus/outputWriterApi/PicoToPi/picoPiSoftPowerRequest/SoftPowerRequestWriter.cpp
         e39-rpi-fw/ibus/outputWriterApi/PicoToPi/picoConfigurationStatusWriter/ConfigurationStatusWriter.cpp
 
+        unittests/video/scanPrograms/graphicsLib/graphicsLibLeakTest.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/graphicsLib.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/graphicsLib.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/DisplayMetrics.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/DisplayMetrics.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/fonts/FontProvider.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/fonts/FontProvider.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/BaseCommand.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/BaseCommand.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/CommandProcessor.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/CommandProcessor.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/EmptyRectangleCommand.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/EmptyRectangleCommand.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/FilledRectangleCommand.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/FilledRectangleCommand.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/LineCommand.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/LineCommand.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/PxCoord.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/PxCoord.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/RleRun.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/RleRun.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/RleRunContainerCommand.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/RleRunContainerCommand.cpp
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/TextCommand.h
+        e39-rpi-fw/video/scanProgram/scanPrograms/graphicsLib/command/TextCommand.cpp
+        e39-rpi-fw/pico-extras/src/common/pico_scanvideo/include/pico/scanvideo/scanvideo_base.h
+        e39-rpi-fw/pico-extras/src/common/pico_scanvideo/include/pico/scanvideo/composable_scanline.h
         )
 
 
@@ -75,6 +102,8 @@ target_include_directories(
         e39-rpi-fw/libs/nanopb_cpp
         e39-rpi-fw/libs/nanopb
         e39-rpi-fw/libs/fmt
+
+        e39-rpi-fw/pico-extras/src/common/pico_scanvideo/include
 
         unittests/
 )

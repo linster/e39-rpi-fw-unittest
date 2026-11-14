@@ -96,3 +96,26 @@ TEST_F(IbusPacketMemoryLeakTests, TestBuilderHasValidChecksum) {
     ASSERT_TRUE(packet.isPacketValid());
     ASSERT_EQ((uint8_t)0x2B, packet.getActualCrc());
 }
+
+TEST_F(IbusPacketMemoryLeakTests, TestBuilderPacketHasEverything) {
+    //80 04 BF 11 01 2B   # KL-R   -- position 1
+    std::vector<uint8_t> data = std::vector<uint8_t>();
+    data.push_back(0x11);
+    data.push_back(0x01);
+
+    auto packet = pico::ibus::data::IbusPacket(
+            pico::ibus::data::IbusDeviceEnum::IKE,
+            pico::ibus::data::IbusDeviceEnum::BROADCAST_BF,
+            data
+    );
+
+    std::vector<uint8_t> expectedPacket = std::vector<uint8_t>();
+    expectedPacket.push_back(0x80);
+    expectedPacket.push_back(0x04);
+    expectedPacket.push_back(0xBF);
+    expectedPacket.push_back(0x11);
+    expectedPacket.push_back(0x01);
+    expectedPacket.push_back(0x2B);
+
+    ASSERT_EQ(expectedPacket, packet.getRawPacket());
+}
