@@ -2,6 +2,7 @@
 // Created by stefan on 10/16/23.
 //
 #include "ibus/outputWriterApi/PicoToPi/picoPiSoftPowerRequest/SoftPowerRequestWriter.h"
+#include "TestPacketUtils.h"
 #include "DummyLogger.h"
 #include "MockDmaManager.h"
 #include <gtest/gtest.h>
@@ -13,25 +14,27 @@ public:
         std::vector<uint8_t> ret = std::vector<uint8_t>();
 
 //        DEBUG : PicoCommsWindow / Sending message: PicoToPi RestartX bytes: [31, 6, 81, 8, 4, b8]
+//        Captured before d129c72 ("Shift enums up") added EmptyMessage = 0: type byte +1 for the current
+//        proto. The trailing "1a 00" (empty loggerStatement) is no longer sent for non-log messages.
         ret.push_back(0x31);
-        ret.push_back(0x06);
+        ret.push_back(0x04);
         ret.push_back(0x81);
         ret.push_back(0x08);
-        ret.push_back(0x04);
-        ret.push_back(0xB8);
+        ret.push_back(0x05);
+        ret.push_back(0xB9);
         return ret;
     }
     static std::vector<uint8_t> restartPi() {
         std::vector<uint8_t> ret = std::vector<uint8_t>();
 //        DEBUG : PicoCommsWindow / Sending message: PicoToPi RestartPi bytes: [31, 6, 81, 8, 5, 1a, 0, a1]
+//        Captured before d129c72 ("Shift enums up") added EmptyMessage = 0: type byte +1 for the current
+//        proto. The trailing "1a 00" (empty loggerStatement) is no longer sent for non-log messages.
         ret.push_back(0x31);
-        ret.push_back(0x06);
+        ret.push_back(0x04);
         ret.push_back(0x81);
         ret.push_back(0x08);
-        ret.push_back(0x05);
-        ret.push_back(0x1A);
-        ret.push_back(0x00);
-        ret.push_back(0xA1);
+        ret.push_back(0x06);
+        ret.push_back(0xBA);
         return ret;
     }
 };
@@ -64,7 +67,7 @@ TEST_F(SoftPowerWriterTest, RestartX) {
     pico::ibus::data::IbusPacket sentPacket = pico::ibus::data::IbusPacket(actualRawPacket);
 
     std::string inputString = std::string(0, '\0');
-    std::vector<uint8_t> data = *sentPacket.getData();
+    std::vector<uint8_t> data = packetData(sentPacket);
     for (const uint8_t item: data) {
         inputString.push_back(item);
     }
@@ -97,9 +100,9 @@ TEST_F(SoftPowerWriterTest, RestartPi) {
               std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi.getSourceDevice());
 
     std::vector<uint8_t> actualDataVector =
-            *std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi.getData();
+            packetData(std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi);
 
-//    EXPECT_THAT(actualDataVector, testing::ElementsAre(0x08, 0x05, 0x1A, 0x00));
+    EXPECT_THAT(actualDataVector, testing::ElementsAre(0x08, 0x06)); // PiSoftPowerRestartPi = 6
 
     std::vector<uint8_t> actualRawPacket =
             std::dynamic_pointer_cast<MockDmaManager>(iDmaManagerPtr)->writtenPacketToPi.getRawPacket();
