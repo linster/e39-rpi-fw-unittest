@@ -55,3 +55,21 @@ TEST(PiToPicoDecode, TypeZeroIsEmptyMessage) {
 TEST(PiToPicoDecode, UnknownTypeIsEmptyMessage) {
     ASSERT_EQ(DecodeHarness().decode({0x08, 0x63}).messageType, M::EmptyMessage); // 99
 }
+
+TEST(PiToPicoDecode, ConfigPushWithUnknownEnumValuesFallsBack) {
+    // A newer Pi build could send enum values this firmware doesn't know. They must decode to a
+    // fallback without UB (the unit-test build makes UBSan fatal).
+    std::vector<uint8_t> cfg = {0x38, 0x63,   // scanProgramOnBoot = 99
+                                0x40, 0x63,   // videoSourceOnBoot = 99
+                                0x50, 0x63,   // videoEncoding = 99
+                                0x58, 0x63,   // aspectRatio = 99
+                                0x18, 0x63};  // enabledMaxLogLevelForIbusLog = 99
+    std::vector<uint8_t> p = {0x08, 0x04, 0x12, (uint8_t) cfg.size()}; p.insert(p.end(), cfg.begin(), cfg.end());
+    M m = DecodeHarness().decode(p);
+    ASSERT_EQ(m.messageType, M::ConfigPush);
+    EXPECT_EQ(m.newConfig.scanProgramOnBoot, messages::ConfigMessage::ScanProgram::MENU);
+    EXPECT_EQ(m.newConfig.videoSourceOnBoot, hardware::videoSwitch::VideoSource::RVC);
+    EXPECT_EQ(m.newConfig.videoEncoding, messages::ConfigMessage::VideoEncoding::NTSC);
+    EXPECT_EQ(m.newConfig.aspectRatio, messages::ConfigMessage::AspectRatio::FourThree);
+    EXPECT_EQ(m.newConfig.enabledMaxLogLevelForIbusLog, logger::BaseLogger::Level::DEBUG);
+}

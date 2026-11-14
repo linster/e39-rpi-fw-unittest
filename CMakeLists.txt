@@ -5,7 +5,8 @@ project(e39_rpi_fw_unittest)
 # reads/writes fail the test run instead of passing silently.
 option(E39_UNITTEST_SANITIZERS "Build tests with ASan/UBSan and _GLIBCXX_ASSERTIONS" ON)
 if(E39_UNITTEST_SANITIZERS)
-    add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS)
+    # -fno-sanitize-recover: a UBSan report aborts the test run instead of just printing.
+    add_compile_options(-fsanitize=address,undefined -fno-sanitize-recover=undefined -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS)
     add_link_options(-fsanitize=address,undefined)
 endif()
 
