@@ -21,17 +21,7 @@ public:
     std::vector<uint8_t> getHeartbeatRequestRawBytes() {
 //        DEBUG : SerialPublisherService / Writing message to serial port: IBusMessage( sourceDevice=PI, destDevice=PICO, data=[]
 //        DEBUG : PicoCommsWindow / Sending message: HeartbeatRequest bytes: [81, 2, 31, b2]
-        std::vector<uint8_t> ret = std::vector<uint8_t>();
-        ret.push_back(0x81);
-        ret.push_back(0x02);
-        ret.push_back(0x31);
-        ret.push_back(0xB2);
-        return ret;
-    }
-
-    std::vector<uint8_t> getHeartbeatResponseRawBytes() {
-//        DEBUG : SerialPublisherService / Writing message to serial port: IBusMessage( sourceDevice=PI, destDevice=PICO, data=[8, 1]
-//        DEBUG : PicoCommsWindow / Sending message: HeartbeatResponse bytes: [81, 4, 31, 8, 1, bd]
+//        Captured before d129c72 ("Shift enums up") added EmptyMessage = 0; type byte +1 for the current proto.
         std::vector<uint8_t> ret = std::vector<uint8_t>();
         ret.push_back(0x81);
         ret.push_back(0x04);
@@ -39,6 +29,20 @@ public:
         ret.push_back(0x08);
         ret.push_back(0x01);
         ret.push_back(0xBD);
+        return ret;
+    }
+
+    std::vector<uint8_t> getHeartbeatResponseRawBytes() {
+//        DEBUG : SerialPublisherService / Writing message to serial port: IBusMessage( sourceDevice=PI, destDevice=PICO, data=[8, 1]
+//        DEBUG : PicoCommsWindow / Sending message: HeartbeatResponse bytes: [81, 4, 31, 8, 1, bd]
+//        Captured before d129c72 ("Shift enums up") added EmptyMessage = 0; type byte +1 for the current proto.
+        std::vector<uint8_t> ret = std::vector<uint8_t>();
+        ret.push_back(0x81);
+        ret.push_back(0x04);
+        ret.push_back(0x31);
+        ret.push_back(0x08);
+        ret.push_back(0x02);
+        ret.push_back(0xBE);
         return ret;
     }
 };

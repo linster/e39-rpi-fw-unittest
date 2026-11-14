@@ -9,6 +9,7 @@
 //Test with valgrind that there's no destructor leaks.
 
 #include <cstddef>
+#include "TestPacketUtils.h"
 #include "ibus/data/IbusPacket.h"
 #include <gtest/gtest.h>
 #include <gmock/gmock-matchers.h>
@@ -76,7 +77,7 @@ TEST_F(IbusPacketMemoryLeakTests, TestArrayConstructorGivesSameAsVector) {
     auto vecPacket = std::make_shared<IbusPacket>(ignitionKeyPositionTwoVector());
     auto arrayPacket = std::make_shared<IbusPacket>(ignitionKeyPositionTwoArray());
 
-    EXPECT_EQ(*vecPacket->getData(), *arrayPacket->getData());
+    EXPECT_EQ(packetData(*vecPacket), packetData(*arrayPacket));
     EXPECT_EQ(vecPacket->getRawPacket(), arrayPacket->getRawPacket());
 }
 
